@@ -6,13 +6,13 @@
 
 var app = require('../app');
 var debug = require('debug')('presserver:server');
-const http = require('http');
+var http = require('http');
 
 /**
  * Get port from environment and store in Express.
  */
-const hostname = '127.0.0.1';
-const port = normalizePort(process.env.PORT || '3000');
+// const hostname = '127.0.0.1';
+var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /*var getPort = function () {
@@ -23,15 +23,16 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-const server = http.createServer(app);
+var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
+// server.listen(port, hostname, () => {
+//   console.log(`Server running at http://${hostname}:${port}/`);
+// });
+server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
