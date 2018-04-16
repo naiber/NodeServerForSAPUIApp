@@ -14,8 +14,9 @@ var works = require('./routes/works');
 const dbuser = "naiber";
 const dbpassword = "m1ch3l35";
 const host = 'ds211309.mlab.com:11309';
-//const host = 'localhost';
+//const host = 'localhost:27017';
 const dbName = 'usereport';
+global.secret = "xxx";
 //init mongoose link
 var mongoose = require('mongoose');
 
