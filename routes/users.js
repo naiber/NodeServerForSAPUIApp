@@ -14,9 +14,18 @@ router.post('/login',function(req,res,next) {
     })
 })
 
-router.get('/:token/:user/:menu',function(req,res,next){
+router.get('/:user/:menu',function(req,res,next){
+    User.findOne({user : req.params.user},function(err,myUser){
+                        if(err) res.status(500).json({error : err})
 
+                        if(!myUser.entries[req.params.menu]){
+                            res.status(404).json({error : "no data"})
+                        }else{
+                            res.status(200).json(myUser.entries[req.params.menu])
+                        }
+                })
 })
+
 
 router.get('/',function(req, res,next) {
     User.find({},function (err ,users) {
