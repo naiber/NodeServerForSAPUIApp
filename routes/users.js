@@ -26,6 +26,23 @@ router.get('/:user/:menu',function(req,res,next){
                 })
 })
 
+router.post('/:user/:menu',function(req,res,next){
+    var newAppointment = req.body;
+    User.findOne({user : req.params.user},function(err,myUser){
+        if(err) res.status(500).json({error : err})
+
+        if(!myUser.entries[req.params.menu]){
+            res.status(404).json({error : "no data"})
+        }else{
+            myUser.entries[req.params.menu].appointment.push(newAppointment);
+            myUser.save(function(err,user)
+            {
+                if (err) return res.status(500).json({error: err});
+                res.status(201).json(user);
+            })
+        }
+})
+})
 
 router.get('/',function(req, res,next) {
     User.find({},function (err ,users) {
