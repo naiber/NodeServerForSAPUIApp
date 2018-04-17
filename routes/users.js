@@ -14,6 +14,10 @@ router.post('/login',function(req,res,next) {
     })
 })
 
+router.get('/:token/:user/:menu',function(req,res,next){
+
+})
+
 router.get('/',function(req, res,next) {
     User.find({},function (err ,users) {
         if (err) return res.status(500).json({error: err});
@@ -37,7 +41,10 @@ router.post('/logon',function(req,res,next) {
       }else if(bcrypt.compareSync(req.body.password,user.password)){
         var token = jwt.encode(user._id, secret);
         console.log(token);
-        return res.status(200).json(user);
+        return res.status(200).json({
+                                        'user' : user,
+                                        'token' : token
+                                    });
       }
 
   })
