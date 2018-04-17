@@ -52,12 +52,37 @@ router.get('/',function(req, res,next) {
 })
 
 router.get('/:id',function(req, res,next) {
-    User.find({_id:req.params.id},function (err ,users) {
+    User.find({_id:req.params.id},function (err ,user) {
         if (err) return res.status(500).json({error: err});
-        res.json(200,users);
+        res.status(200).json(user)
 
     })
 });
+
+router.delete('/record/:user/:menu/:id',function(req,res,next){
+    User.findOne({user:req.params.user},function(err,myUser){
+        if(err) res.status(500).json({error : err})
+
+        if(!myUser.entries[req.params.menu]){
+            res.status(404).json({error : "no data"})
+        }else{
+            for(var record of myUser.entries[req.params.menu].appointment){
+                console.log('\nrecord-> ',record)
+                if(record._id==req.params.id){
+                    myUser.entries[req.params.menu].appointment.remove(record);
+                    myUser.save(function(err,user)
+                    {
+                        if (err) return res.status(500).json({error: err});
+                        res.status(201).json(user);
+                    })
+                }else{
+                    res.status(404).json({error : "no data"})
+                }
+            }
+        }
+    })
+})
+
 router.post('/logon',function(req,res,next) {
   if (req.body) {
   User.findOne({user : req.body.username},function(err,user){
