@@ -18,8 +18,7 @@ var userSchema = mongoose.Schema({
                 required : true
               },
     entries : [{
-        name : String,
-        appointment : [Record.schema]
+        name : String
       }]
 });
 

@@ -11,6 +11,8 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var suppliers = require('./routes/suppliers');
 var works = require('./routes/works');
+var records = require('./routes/records');
+
 const dbuser = "naiber";
 const dbpassword = "m1ch3l35";
 const host = 'ds211309.mlab.com:11309';
@@ -52,7 +54,7 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/suppliers',suppliers);
 app.use('/works',works);
-
+app.use('/records',records);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

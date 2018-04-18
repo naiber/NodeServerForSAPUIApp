@@ -4,6 +4,7 @@ var User = require('../models/user');
 var Schema = mongoose.Schema;
 var recordSchema = mongoose.Schema({
     user : {type : Schema.ObjectId, ref : 'User'},
+    menu : String,
     idOrder : Number,
     order : String,
     supplier : String,

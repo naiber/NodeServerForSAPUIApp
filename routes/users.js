@@ -75,35 +75,36 @@ router.delete('/record/:user/:menu/:id',function(req,res,next){
                         if (err) return res.status(500).json({error: err});
                         res.status(201).json(user);
                     })
-                }else{
-                    res.status(404).json({error : "no data"})
-                }
+                }            
             }
+
+            res.status(404).json({error : "no data"})
         }
     })
 })
 
 router.put('/record/:user/:menu/:id',function(req,res,next){
-    var newAppointment = req.body;
-    User.findOne({user : req.params.user},function(err,myUser){
+    var i = 0;
+    User.findOne({user:req.params.user},function(err,myUser){
         if(err) res.status(500).json({error : err})
 
         if(!myUser.entries[req.params.menu]){
             res.status(404).json({error : "no data"})
         }else{
-            for(var i = 0;i<myUser.entries[req.params.menu].appointment.length;i++){
-                
-                if(myUser.entries[req.params.menu].appointment[i]._id==req.params.id){
-                    myUser.entries[req.params.menu].appointment[i]=newAppointment;
+            for(var record of myUser.entries[req.params.menu].appointment){
+                i++;
+                console.log('\nrecord-> ',record)
+                if(record._id==req.params.id){
+                    myUser.entries[req.params.menu].appointment[i]=req.body;
                     myUser.save(function(err,user)
                     {
                         if (err) return res.status(500).json({error: err});
-                        res.status(201).json("record updated");
+                        res.status(201).json(user);
                     })
-                }else{
-                    res.status(404).json({error : "no data"})
                 }
             }
+
+            res.status(404).json({error : "no data"})
         }
     })
 })
