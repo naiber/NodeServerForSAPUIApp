@@ -24,34 +24,18 @@ router.post('/:user/:menu',function(req,res,next){
         hours : req.body.hours
     })
 
-    newAppointment.save(function(err,user)
+    newAppointment.save(function(err,record)
     {
         if (err) return res.status(500).json({error: err});
-        res.status(201).json(user);
+        res.status(200).json(record);
     })
 })
 
-router.delete('/record/:user/:menu/:id',function(req,res,next){
-    User.findOne({user:req.params.user},function(err,myUser){
+router.delete('/:user/:menu/:id',function(req,res,next){
+    Record.remove({user:req.params.user,menu:req.params.menu,_id:req.params.id},function(err){
         if(err) res.status(500).json({error : err})
 
-        if(!myUser.entries[req.params.menu]){
-            res.status(404).json({error : "no data"})
-        }else{
-            for(var record of myUser.entries[req.params.menu].appointment){
-                console.log('\nrecord-> ',record)
-                if(record._id==req.params.id){
-                    myUser.entries[req.params.menu].appointment.remove(record);
-                    myUser.save(function(err,user)
-                    {
-                        if (err) return res.status(500).json({error: err});
-                        res.status(201).json(user);
-                    })
-                }            
-            }
-
-            res.status(404).json({error : "no data"})
-        }
+        res.status(200).json({message : 'record deleted'});
     })
 })
 
