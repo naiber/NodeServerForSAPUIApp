@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 var Record = require('../models/record');
-var Schema = mongoose.Schema;
 
 var userSchema = mongoose.Schema({
     name : {
@@ -18,7 +17,8 @@ var userSchema = mongoose.Schema({
                 required : true
               },
     entries : [{
-        name : String
+        name : String,
+        appointment : [Record.schema]
       }]
 });
 

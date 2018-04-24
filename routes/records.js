@@ -7,7 +7,9 @@ var bcrypt = require('bcrypt-nodejs');
 var jwt = require('jwt-simple');
 
 router.get('/:user/:menu',function(req,res,next){
-    Record.find({user:req.params.user,menu:req.params.menu},function(err,records){
+    Record.find({user:req.params.user,menu:req.params.menu}).
+    populate('user').
+    exec(function(err,records){
         if (err || !records) res.status(500).json({error: err})
 
         res.status(200).json(records)
@@ -15,6 +17,7 @@ router.get('/:user/:menu',function(req,res,next){
 })
 
 router.post('/:user/:menu',function(req,res,next){
+    
     var newAppointment = new Record({
         user : req.params.user,
         menu : req.params.menu,
@@ -23,6 +26,14 @@ router.post('/:user/:menu',function(req,res,next){
         supplier : req.body.supplier,
         hours : req.body.hours
     })
+
+    /* User.findOne({user:req.params.user}).
+        where('entries.name').equals(req.params.menu).
+        select('entries').
+        exec(function(err,entry){
+            
+        }) */
+    
 
     newAppointment.save(function(err,record)
     {
@@ -39,30 +50,21 @@ router.delete('/:user/:menu/:id',function(req,res,next){
     })
 })
 
-router.put('/record/:user/:menu/:id',function(req,res,next){
-    var i = 0;
-    User.findOne({user:req.params.user},function(err,myUser){
-        if(err) res.status(500).json({error : err})
+router.put('/:user/:menu/:id',function(req,res,next){
 
-        if(!myUser.entries[req.params.menu]){
-            res.status(404).json({error : "no data"})
-        }else{
-            for(var record of myUser.entries[req.params.menu].appointment){
-                i++;
-                console.log('\nrecord-> ',record)
-                if(record._id==req.params.id){
-                    myUser.entries[req.params.menu].appointment[i]=req.body;
-                    myUser.save(function(err,user)
-                    {
-                        if (err) return res.status(500).json({error: err});
-                        res.status(201).json(user);
-                    })
-                }
-            }
+    var newAppointment = new Record(req.body);
+    Record.findOne({user:req.params.user,menu:req.params.menu,_id:req.params.id}).
+        populate('user').
+        exec(function(err,record){
+            if(err) res.status(500).json({error : err})
 
-            res.status(404).json({error : "no data"})
-        }
-    })
+            record = newAppointment;
+            record.save(function(err){
+                if(err) res.status(500).json({error : err})
+                
+                res.status(201).json({message : 'record updated'})
+            })
+        })
 })
 
 

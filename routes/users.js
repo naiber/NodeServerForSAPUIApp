@@ -6,27 +6,26 @@ var bcrypt = require('bcrypt-nodejs');
 var jwt = require('jwt-simple');
 
 
-router.post('/login',function(req,res,next) {
-    console.log('req.body',req.body)
-    User.find({user:req.body.username},function(err,users){
-        if (err) return res.status(500).json({error: err});
-        res.json(201,users)
-    })
-})
-
 router.get('/:user/:menu',function(req,res,next){
-    User.findOne({user : req.params.user},function(err,myUser){
-                        if(err) res.status(500).json({error : err})
+    /* User.findOne({user : req.params.user},function(err,myUser){
+                    if(err) res.status(500).json({error : err})
 
-                        if(!myUser.entries[req.params.menu]){
+                    if(!myUser.entries[req.params.menu]){
                             res.status(404).json({error : "no data"})
                         }else{
                             res.status(200).json(myUser.entries[req.params.menu])
-                        }
-                })
+                            }
+                        }) */
+    User.findOne({user:req.params.user}).
+        populate('entries.appointment').
+        exec(function(err,user){
+            if(err) res.status(500).json({error : err})
+
+            res.status(200).json(user.entries[req.params.menu])
+        })
 })
 
-router.post('/:user/:menu',function(req,res,next){
+/* router.post('/:user/:menu',function(req,res,next){
     var newAppointment = req.body;
     User.findOne({user : req.params.user},function(err,myUser){
         if(err) res.status(500).json({error : err})
@@ -42,12 +41,19 @@ router.post('/:user/:menu',function(req,res,next){
             })
         }
 })
-})
+}) */
 
 router.get('/',function(req, res,next) {
-    User.find({},function (err ,users) {
+    /* User.find({},function (err ,users) {
         if (err) return res.status(500).json({error: err});
         res.json(users);
+    }) */
+    User.find({}).
+    populate('entries').
+    exec(function(err,users){
+        if(err) res.status(500).json({error : err})
+
+        res.status(200).json(users)
     })
 })
 
@@ -59,7 +65,7 @@ router.get('/:id',function(req, res,next) {
     })
 });
 
-router.delete('/record/:user/:menu/:id',function(req,res,next){
+/* router.delete('/record/:user/:menu/:id',function(req,res,next){
     User.findOne({user:req.params.user},function(err,myUser){
         if(err) res.status(500).json({error : err})
 
@@ -81,9 +87,9 @@ router.delete('/record/:user/:menu/:id',function(req,res,next){
             res.status(404).json({error : "no data"})
         }
     })
-})
+}) */
 
-router.put('/record/:user/:menu/:id',function(req,res,next){
+/* router.put('/record/:user/:menu/:id',function(req,res,next){
     var i = 0;
     User.findOne({user:req.params.user},function(err,myUser){
         if(err) res.status(500).json({error : err})
@@ -107,29 +113,27 @@ router.put('/record/:user/:menu/:id',function(req,res,next){
             res.status(404).json({error : "no data"})
         }
     })
-})
+}) */
 
 router.post('/logon',function(req,res,next) {
-  if (req.body) {
-  User.findOne({user : req.body.username},function(err,user){
-      if(err) res.status(500).json({error : err})
-      if(!user){
-          res.status(404).json({message : 'user not found'})
-      }else if(bcrypt.compareSync(req.body.password,user.password)){
-        var token = jwt.encode(user._id, secret);
-        console.log(token);
-        return res.status(200).json({
-                                        'user' : user,
-                                        'token' : token
-                                    });
-      }
-
-  })
-  
-}else{
-  console.log('error if condition')
-  res.status(404).json({message : 'no body received'});
-}
+    if((!req.body.username && !req.body.password) || (!req.body.username || !req.body.password)){
+            res.status(404).json({message : 'body\'s fields not valid'})
+        }else{
+            User.findOne({user : req.body.username}).
+            populate('entries').
+            exec(function(err,user){
+                if(err) res.status(500).json({error : err})
+                
+                if(bcrypt.compareSync(req.body.password,user.password)){
+                    var token = jwt.encode(user._id, secret);
+                    console.log(token);
+                    return res.status(200).json({
+                                                    'user' : user,
+                                                    'token' : token
+                                                });
+                }
+            })
+        }
 })
 
 var authorize = function(req, res, next) {
@@ -151,17 +155,17 @@ router.post('/',function(req,res,next) {
             entries : req.body.entries
         });
 
-        newUser.save(function(err,user)
+        newUser.save(function(err)
         {
             if (err) return res.status(500).json({error: err});
-            res.status(201).json(user);
+            res.status(201).json({message : 'user saved'});
         })
 
     }
 );
 
 router.put('/:id', function (req, res,next) {
-        User.findOne({_id: req.params.id}, function (err ,users) {
+        /* User.findOne({_id: req.params.id}, function (err ,users) {
 
                 if (err) return res.status(500).json({error: err});
 
@@ -178,9 +182,23 @@ router.put('/:id', function (req, res,next) {
                 })
             }
 
-        )
-    }
-);
+        ) */
+        User.findOne({_id : req.params.id}).
+        populate('entries').
+        exec(function(err,user){
+            if(err) res.status(500).json({error : err})
+            
+            for(key in req.body){//for Hash : cicla i campi nel body della request
+                users[key] = req.body[key];
+            }
+
+            user.save(function(err){
+                if(err) res.status(500).json({error : err})
+
+                res.status(201).json({message : 'user saved'})
+            })
+        })
+});
 
 router.delete('/:id',function (req, res,next) {
         User.remove({_id:req.params.id}, function(err)
