@@ -12,6 +12,7 @@ var users = require('./routes/users');
 var suppliers = require('./routes/suppliers');
 var works = require('./routes/works');
 var records = require('./routes/records');
+var books = require('./routes/books');
 
 const dbuser = "naiber";
 const dbpassword = "m1ch3l35";
@@ -55,6 +56,7 @@ app.use('/users', users);
 app.use('/suppliers',suppliers);
 app.use('/works',works);
 app.use('/records',records);
+app.use('/books',books);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
