@@ -19,6 +19,27 @@ router.get('/:id',function(req, res,next)
     })
 });
 
+router.put('/:id', function (req, res,next) {
+     Book.findOne({_id: req.params.id}, function (err ,books) {
+
+            if (err) return res.status(500).json({error: err});
+
+            if(!books) return res.status(404).json({message:'post non trovato'});
+
+            for(key in req.body){//for Hash : cicla i campi nel body della request
+                books[key] = req.body[key];
+            }
+
+            books.save(function(err)
+            {
+                if (err) return res.status(500).json({error: err});
+                res.json(books);
+            })
+        }
+
+    );
+});
+
 router.post('/',function(req,res,next)
     {
         var newBookData;
