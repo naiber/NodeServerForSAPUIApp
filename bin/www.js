@@ -4,15 +4,17 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('presserver:server');
-var http = require('http');
+const app = require('../app');
+const debug = require('debug')('presserver:server');
+const http = require('http');
+const dotenv = require('dotenv');
+dotenv.config();
 
 /**
  * Get port from environment and store in Express.
  */
 // const hostname = '127.0.0.1';
-var port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || '3001');
 app.set('port', port);
 
 /*var getPort = function () {
@@ -23,7 +25,7 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+const server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -93,7 +95,7 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+  process.stdout.write('Listening on ' + bind + '\n');
 }
 
 /*

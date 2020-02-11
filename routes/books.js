@@ -8,7 +8,7 @@ router.get('/',function(req, res,next)
         if (err) return res.status(500).json({error: err});
         res.json(books);
     })
-})
+});
 
 router.get('/:id',function(req, res,next)
 {

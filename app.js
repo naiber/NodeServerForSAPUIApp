@@ -1,18 +1,18 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var cors = require('cors');
+const express = require('express');
+const path = require('path');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 /*var wwwPort = require('bin/www')*/
 
-var index = require('./routes/index');
-var users = require('./routes/users');
-var suppliers = require('./routes/suppliers');
-var works = require('./routes/works');
-var records = require('./routes/records');
-var books = require('./routes/books');
+const index = require('./routes/index');
+const users = require('./routes/users');
+const suppliers = require('./routes/suppliers');
+const works = require('./routes/works');
+const records = require('./routes/records');
+const books = require('./routes/books');
 
 const dbuser = "naiber";
 const dbpassword = "m1ch3l35";
@@ -21,12 +21,12 @@ const host = 'ds211309.mlab.com:11309';
 const dbName = 'usereport';
 global.secret = "xxx";
 //init mongoose link
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 mongoose.connect('mongodb://'+dbuser+":"+dbpassword+"@"+host+'/'+dbName);
 //mongoose.connect('mongodb://'+host+'/'+dbName);
 
-var db = mongoose.connection;
+const db = mongoose.connection;
 
 db.on('error',function()
 {
@@ -35,8 +35,8 @@ db.on('error',function()
 db.once('open',function()
 {
     process.stdout.write('DB connection Ready');
-})
-var app = express();
+});
+const app = express();
 app.use(cors());
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
