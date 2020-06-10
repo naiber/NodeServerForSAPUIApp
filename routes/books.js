@@ -6,6 +6,7 @@ router.get('/',function(req, res,next)
 {
     Book.find({},function (err ,books) {
         if (err) return res.status(500).json({error: err});
+        res.setHeader("Content-Security-Policy", "frame-ancestors https://academy-test.ferrari.com*");//Content-Security-Policy: frame-ancestors https://example.com
         res.json(books);
     })
 })
