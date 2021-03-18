@@ -1,6 +1,7 @@
-/node_modules
-/.idea
+node_modules
+.idea
 /node-js-getting-started
 /._.DS_Store
 /package-lock.json
 .env
+.history
