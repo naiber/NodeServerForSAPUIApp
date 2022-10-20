@@ -14,7 +14,7 @@
     "express": "~4.14.0",
     "jade": "~1.11.0",
     "jwt-simple": "^0.5.1",
-    "mongoose": "^4.13.21",
+    "mongoose": "^6.6.6",
     "morgan": "~1.7.0",
     "nan": "^2.10.0",
     "node-gyp-install": "^2.2.0",
